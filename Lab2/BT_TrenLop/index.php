@@ -29,6 +29,8 @@
             echo "Chu vi hình CN cạnh là: $cv <br>";
             echo "Diện tích hình CN cạnh là: $dt <br>";
             break;
+        default:
+            echo "Nothing!";
         
     }
 
