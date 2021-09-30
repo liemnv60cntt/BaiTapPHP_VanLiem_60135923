@@ -1,2 +1,3 @@
 # BaiTapPHP_VanLiem_60135923
- Bai tap thuc hanh mon Phat trien phan mem ma nguon mo
+ Bài tập thực hành tổng hợp môn Phát triển phần mềm mã nguồn mở
+ Nguyễn Văn Liêm - 60135923 - 60CNTT-1
