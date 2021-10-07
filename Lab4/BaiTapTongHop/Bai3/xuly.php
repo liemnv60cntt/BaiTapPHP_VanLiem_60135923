@@ -52,7 +52,7 @@ if (isset($_REQUEST['veSo'])) {
 } else {
     $veSo = '';
 }
-// Array with names
+// Array
 $a = array(
     "08" => "Giải 8",
     "260" => "Giải 7",
@@ -93,6 +93,6 @@ if ($q !== "") {
     
 }
 // echo $ketqua === "" ? "Không tìm thấy" : $ketqua;
-// Output "no suggestion" if no hint was found or output correct values
+// Output
 echo $hint === "" ? "Không tìm thấy" : $hint;
 ?>
