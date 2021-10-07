@@ -1,0 +1,76 @@
+table {
+    font-family: arial, sans-serif;
+    border-collapse: collapse;
+    width: 800px;
+    margin: auto;
+}
+#tb2{
+    width: 550px;
+}
+td {
+    border: 1px solid #dddddd;
+    text-align: left;
+    padding: 8px;
+    font-weight: bold;
+    font-size: 20px;
+    width: 400px;
+}
+
+tr:nth-child(even) {
+    background-color: #dddddd;
+}
+
+._g8 {
+    color: red;
+    text-align: center;
+}
+
+._g {
+    text-align: center;
+}
+h1{
+    text-align: center;
+}
+#find{
+    font-size: large;
+    margin-bottom: 20px;
+    margin-top: 30px;
+    font-weight: bold;
+}
+form{
+    text-align: center;
+}
+.inp{
+    height: 20px;
+    font-size: 20px;
+}
+.btn {
+    background-color: #6A5ACD;
+    border: none;
+    color: white;
+    padding: 5px 10px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 16px;
+    margin: 4px 2px;
+    cursor: pointer;
+    border-radius: 5px;
+    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+    opacity: 0.8;
+    transition: 0.3s;
+}
+.btn:hover {
+    opacity: 2;
+    border-radius: 10px;
+}
+#kq {
+    background-color: #ffb3ff;
+    font-weight: bold;
+}
+.t1{
+    width: 140px;
+}
+#note1{
+    text-align: center;
+}
