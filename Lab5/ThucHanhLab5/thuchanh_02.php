@@ -122,16 +122,14 @@
         $trinhDo = isset($_POST['trinhDo']) ? $_POST['trinhDo'] : '';
         $lopHoc = isset($_POST['lopHoc']) ? $_POST['lopHoc'] : '';
         $nganhHoc = isset($_POST['nganhHoc']) ? $_POST['nganhHoc'] : '';
-        $chucVu = '';
         if ($doiTuong == 'gv') {
             // $x = "Trình độ";
             $gv = new GiangVien($hoTen, $gioiTinh, $diaChi, $trinhDo);
-            $chucVu = "Giảng viên";
             // $gv->setHoTen($hoTen);
             // $gv->setGioiTinh($gioiTinh);
             // $gv->setDiaChi($diaChi);
             // $gv->setTrinhDo($trinhDo);
-            $str = "Thông tin: <br>Chức vụ: " . $chucVu . "<br>Họ tên: " . $gv->getHoTen() . "<br>" .
+            $str = "Thông tin giảng viên: <br>Họ tên: " . $gv->getHoTen() . "<br>" .
                 "Giới tính: " . $gv->getGioiTinh() . "<br>" . "Địa chỉ: " . $gv->getDiaChi() . "<br>Trình độ: " . $gv->getTrinhDo()
                 . "<br>Lương: " . $gv->tinhLuong($gv->getTrinhDo());
             $x = "Trình độ";
@@ -150,13 +148,12 @@
             // $x = "Lớp học";
             // $y = "Ngành học";
             $sv = new SinhVien();
-            $chucVu = "Sinh viên";
             $sv->setHoTen($hoTen);
             $sv->setGioiTinh($gioiTinh);
             $sv->setDiaChi($diaChi);
             $sv->setLopHoc($lopHoc);
             $sv->setNganhHoc($nganhHoc);
-            $str = "Thông tin: <br>Chức vụ: " . $chucVu . "<br>Họ tên: " . $sv->getHoTen() . "<br>" .
+            $str = "Thông tin sinh viên: <br>Họ tên: " . $sv->getHoTen() . "<br>" .
                 "Giới tính: " . $sv->getGioiTinh() . "<br>" . "Địa chỉ: " . $sv->getDiaChi() .
                 "<br>Lớp học: " . $sv->getLopHoc() . "<br> Ngành học: " . $sv->getNganhHoc() .
                 "<br>Điểm thưởng: " . $sv->tinhDiemThuong($sv->getNganhHoc());
