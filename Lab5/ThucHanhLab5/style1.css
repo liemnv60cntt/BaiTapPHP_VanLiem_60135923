@@ -17,7 +17,13 @@ legend {
 input {
     border: 1px solid #191970;
     margin: 5px;
-    font-size: 20px;
+    font-size: 18px;
+    border-radius: 5px;
+}
+select{
+    border: 1px solid #191970;
+    margin: 5px;
+    font-size: 18px;
     border-radius: 5px;
 }
 textarea{
@@ -35,7 +41,7 @@ textarea{
 form {
     width: auto;
     left: 50%;
-    top: 25%;
+    top: 30%;
     position: absolute;
     transform: translate(-50%, -50%);
     
