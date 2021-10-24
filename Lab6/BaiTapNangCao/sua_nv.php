@@ -6,7 +6,7 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.1/dist/css/bootstrap.min.css" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.1/dist/js/bootstrap.bundle.min.js"></script>
     <script src='https://kit.fontawesome.com/a076d05399.js' crossorigin='anonymous'></script>
-    <title>Thêm nhân viên</title>
+    <title>Sửa</title>
 </head>
 
 <body>
@@ -15,30 +15,63 @@
     if(!isset($_SESSION['username']))
         echo("<script>location.href = 'index.php';</script>");
     require('connect.php');
+
+    if ( (isset($_GET['maNV'])) ) { // From nhanvien.php
+        $maNV = $_GET['maNV'];
+    } elseif ( (isset($_POST['maNV']))) { // Form submission.
+        $maNV = $_POST['maNV'];
+    } else { // No valid ID, kill the script.
+        echo '<p class="error">This page has been accessed in error.</p>';
+        include ('includes/footer.html'); 
+        exit();
+    }
+    //Lấy dữ liệu nhân viên theo mã NV
+    $query_nv = "SELECT * FROM `nhanvien` WHERE maNV='$maNV';";
+    $result_nv = @mysqli_query($dbc, $query_nv);
+    $hoTen = ''; $ngaySinh = ''; $gioiTinh = ''; $diaChi = ''; $anh = ''; $_maLoaiNV = ''; $_maPhong = '';
+
+    if (mysqli_num_rows($result_nv) == 1) {
+        $row = mysqli_fetch_array ($result_nv);
+        $hoTen = $row['hoTen'];
+        $ngaySinh = $row['ngaySinh'];
+        $_gioiTinh = $row['gioiTinh'];
+        $diaChi = $row['diaChi'];
+        $anh = $row['anh'];
+        $_maLoaiNV = $row['maLoaiNV'];
+        $_maPhong = $row['maPhong'];
+    
+    } else { // Not a valid user ID.
+        echo '<p class="error">This page has been accessed in error.</p>';
+    }
+    mysqli_free_result($result_nv);
+
     ?>
     <form action="" method="post" enctype="multipart/form-data" class="p-3">
         <table bgcolor="#f5f5f0" align="center" width="60%" border="0" class="mx-auto rounded shadow">
             <tr bgcolor="#ffd633">
                 <td colspan="3" align="center">
                     <font color="#001a00">
-                        <h2>THÊM NHÂN VIÊN MỚI</h2>
+                        <h2>SỬA THÔNG TIN NHÂN VIÊN</h2>
                     </font>
                 </td>
             </tr>
             <tr>
                 <td style="width: 150px;"></td>
                 <td style="width: 150px;">Mã nhân viên: </td>
-                <td><input type="text" class="form-control w-50 my-2" name="maNV" size="20" value="<?php if (isset($_POST['maNV'])) echo $_POST['maNV']; ?>" /></td>
+                <td><input type="text" class="form-control w-50 my-2" name="maNV" size="20" 
+                    value="<?php if (isset($_POST['maNV'])) echo $_POST['maNV']; else echo $maNV;?>" readonly/></td>
             </tr>
             <tr>
                 <td style="width: 150px;"></td>
                 <td>Họ tên nhân viên: </td>
-                <td><input type="text" class="form-control w-50 my-2" name="hoTen" size="50" value="<?php if (isset($_POST['hoTen'])) echo $_POST['hoTen']; ?>" /></td>
+                <td><input type="text" class="form-control w-50 my-2" name="hoTen" size="50" 
+                    value="<?php if (isset($_POST['hoTen'])) echo $_POST['hoTen']; else echo $hoTen;?>" /></td>
             </tr>
             <tr>
                 <td style="width: 150px;"></td>
                 <td>Ngày sinh: </td>
-                <td><input type="text" class="form-control w-50 my-2" name="ngaySinh" size="50" value="<?php if (isset($_POST['ngaySinh'])) echo $_POST['ngaySinh']; ?>" /></td>
+                <td><input type="text" class="form-control w-50 my-2" name="ngaySinh" size="50" 
+                    value="<?php if (isset($_POST['ngaySinh'])) echo $_POST['ngaySinh']; else echo $ngaySinh;?>" /></td>
             </tr>
             <tr>
                 <td style="width: 150px;"></td>
@@ -46,12 +79,12 @@
                 <td>
                     <div class="form-check form-check-inline">
                         <input class="form-check-input" type="radio" name="gioiTinh" id="inlineRadio1" value="nam" 
-                                <?php if (isset($_POST['gioiTinh']) && ($_POST['gioiTinh']) == "nam") echo 'checked' ?> checked>
+                                <?php if ((isset($_POST['gioiTinh']) && ($_POST['gioiTinh']) == "nam") || ($_gioiTinh == "1")) echo 'checked' ?> checked>
                         <label class="form-check-label mt-1" for="inlineRadio1">Nam</label>
                     </div>
                     <div class="form-check form-check-inline">
                         <input class="form-check-input" type="radio" name="gioiTinh" id="inlineRadio2" value="nu" 
-                                <?php if (isset($_POST['gioiTinh']) && ($_POST['gioiTinh']) == "nu") echo 'checked' ?>>
+                                <?php if ((isset($_POST['gioiTinh']) && ($_POST['gioiTinh']) == "nu") || ($_gioiTinh == "0")) echo 'checked' ?>>
                         <label class="form-check-label mt-1" for="inlineRadio2">Nữ</label>
                     </div>
                     
@@ -62,12 +95,23 @@
             <tr>
                 <td style="width: 150px;"></td>
                 <td>Địa chỉ: </td>
-                <td><input type="text" class="form-control w-50 my-2" name="diaChi" size="50" value="<?php if (isset($_POST['diaChi'])) echo $_POST['diaChi']; ?>" /></td>
+                <td><input type="text" class="form-control w-50 my-2" name="diaChi" size="50" 
+                    value="<?php if (isset($_POST['diaChi'])) echo $_POST['diaChi']; else echo $diaChi;?>" /></td>
             </tr>
             <tr>
                 <td style="width: 150px;"></td>
-                <td>Ảnh nhân viên: </td>
-                <td><input type="FILE" class="form-control w-50 my-2" name="anh" size="80" value="<?php if (isset($_POST['anh'])) echo $_POST['anh']; ?>" /></td>
+                <td>Ảnh nhân viên mới: </td>
+                <td>
+                    <input type="FILE" class="form-control w-50 my-2" name="anh" size="80" 
+                        value="<?php if (isset($_POST['anh'])) echo $_POST['anh'];?>"/>
+                </td>
+            </tr>
+            <tr>
+                <td style="width: 150px;"></td>
+                <td>Ảnh nhân viên cũ: </td>
+                <td>
+                    <input type="text" class="form-control w-50" readonly name="image" value="<?php echo $anh; ?>"/>
+                </td>
             </tr>
             <tr>
                 <td style="width: 150px;"></td>
@@ -81,7 +125,9 @@
                                 $maLoaiNV = $row['maLoaiNV'];
                                 $tenLoaiNV = $row['tenLoaiNV'];
                                 echo "<option value='$maLoaiNV' ";
-                                if (isset($_REQUEST['loai_nv']) && ($_REQUEST['loai_nv'] == $maLoaiNV)) echo "selected='selected'";
+                                if ((isset($_REQUEST['loai_nv']) && ($_REQUEST['loai_nv'] == $maLoaiNV)) || ($_maLoaiNV == $maLoaiNV)){
+                                    echo "selected='selected'";
+                                }
                                 echo ">$tenLoaiNV</option>";
                             }
                         }
@@ -102,7 +148,7 @@
                                 $maPhong = $row['maPhong'];
                                 $tenPhong = $row['tenPhong'];
                                 echo "<option value='" . $maPhong . "' ";
-                                if (isset($_REQUEST['phong_ban']) && ($_REQUEST['phong_ban'] == $maPhong)) echo "selected='selected'";
+                                if ((isset($_REQUEST['phong_ban']) && ($_REQUEST['phong_ban'] == $maPhong)) || ($_maPhong==$maPhong)) echo "selected='selected'";
                                 echo ">" . $tenPhong . "</option>";
                             }
                         }
@@ -113,7 +159,10 @@
             </tr>
 
             <tr>
-                <td colspan="3" align="center"><input type="submit" name="them" size="10" value="Thêm mới" class="btn btn-primary my-2 shadow" /></td>
+                <td colspan="3" align="center">
+                    <input type="submit" name="sua" size="10" value="Lưu lại" class="btn btn-primary my-2 shadow" />
+                    <a href="javascript:window.history.back(-1);" class="btn btn-secondary">Quay lại</a>
+                </td>
             </tr>
         </table>
     </form>
@@ -121,12 +170,7 @@
     $ten_anh = '';
     if ($_SERVER['REQUEST_METHOD'] == "POST") {
         $errors = array(); //khởi tạo 1 mảng chứa lỗi
-        //kiem tra ma nhan vien
-        if (empty($_POST['maNV'])) {
-            $errors[] = "Bạn chưa nhập mã nhân viên";
-        } else {
-            $maNV = trim($_POST['maNV']);
-        }
+        
         //kiểm tra họ tên nhân viên
         if (empty($_POST['hoTen'])) {
             $errors[] = "Bạn chưa nhập họ tên";
@@ -154,9 +198,12 @@
             $type = $anh['type'];
             $size = $anh['size'];
             $tmp = $anh['tmp_name'];
-            if (($type == 'image/jpeg' || ($type == 'image/png') || ($type == 'image/jpg') || ($type == 'image/bmp') || ($type == 'image/gif') && $size < 8000)) {
+            if (($type == 'image/jpeg' || ($type == 'image/png') || ($type == 'image/jpg') || ($type == 'image/bmp') && $size < 8000)) {
                 move_uploaded_file($tmp, "Images/" . $ten_anh);
             }
+        }else{
+            //Nếu ko up file ảnh mới thì lấy tên file ảnh cũ
+            $ten_anh = $_POST['image'];
         }
         //cap nhat ma loai nv va ma phong ban
         $maLoaiNV = $_POST['loai_nv'];
@@ -165,10 +212,18 @@
 
         if (empty($errors)) //neu khong co loi xay ra
         {
-            $query = "INSERT INTO nhanvien VALUES ('$maNV','$hoTen','$ngaySinh',$gioiTinh,'$diaChi','$ten_anh','$maLoaiNV','$maPhong')";
+            $query = "UPDATE nhanvien SET
+                hoTen = '$hoTen',
+                ngaySinh = '$ngaySinh',
+                gioiTinh = $gioiTinh,
+                diaChi = '$diaChi',
+                anh = '$ten_anh',
+                maLoaiNV = '$maLoaiNV',
+                maPhong = '$maPhong'
+                WHERE maNV = '$maNV'";
             $result = mysqli_query($dbc, $query);
             if (mysqli_affected_rows($dbc) == 1) { //neu them thanh cong
-                echo "<div align='center' style='font-size: 24px;font-weight:bold;margin:10px;'>Thêm mới thành công!</div>";
+                echo "<div align='center' style='font-size: 24px;font-weight:bold;margin:10px;'>Sửa thông tin thành công!</div>";
                 $query = "Select nhanvien.*, tenLoaiNV, tenPhong 
                     from nhanvien, loainv, phongban
                     WHERE nhanvien.maLoaiNV = loainv.maLoaiNV and nhanvien.maPhong = phongban.maPhong
@@ -197,21 +252,21 @@
                 }
             } else //neu khong them duoc
             {
-                echo "<h1 class='text-center text-danger'>Có lỗi, không thể thêm được!</h1>";
-                echo "<h6 class='text-center text-danger'>" . mysqli_error($dbc) . "<br/><br />Query: " . $query . "</h6>";
+                echo "<h1 class='text-center text-danger'>Có lỗi, không thể sửa được!</h1>";
+                echo "<p class='text-center'>" . mysqli_error($dbc) . "<br/><br />Query: " . $query . "</p>";
                 echo '<a href="nhanvien.php"><button type="button" id="back-btn" class="btn btn-primary d-flex mx-auto shadow">
                             Quay lại trang nhân viên</button></a>';
             }
         } else { //neu co loi
             echo "<div class='text-center'>";
-            echo "<h2>Có lỗi xảy ra:</h2><br/>";
+            echo "<h2 class='text-center text-danger'>Có lỗi xảy ra:</h2><br/>";
             foreach ($errors as $msg) {
                 echo "<div class='d-flex justify-content-center'>";
-                echo "<h4 style='text-align: left; width:330px;'><i>- $msg <br/></i></h4>";
+                echo "<h4 style='text-align: left; width:290px;'><i>- $msg <br/></i></h4>";
                 echo "</div>";
             }
             echo "<h3 class='text-center text-danger'>Hãy thử lại.</h3>";
-            echo "</.div>";
+            echo "</div>";
             echo '<a href="nhanvien.php"><button type="button" id="back-btn" class="btn btn-primary d-flex mx-auto shadow">
                             Quay lại trang nhân viên</button></a>';
         }

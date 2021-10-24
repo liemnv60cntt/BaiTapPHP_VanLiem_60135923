@@ -11,8 +11,10 @@
 
 <body>
     <?php 
-        include('includes/header.html'); 
-        require('connect.php');
+    include('includes/header.php');
+    if(!isset($_SESSION['username']))
+        echo("<script>location.href = 'index.php';</script>");
+    require('connect.php');
     ?>
     <form action="" method="get">
         <table bgcolor="#00e673" align="center" class="my-2 rounded shadow" width="100%" border="1" cellpadding="5" cellspacing="5" style="border-collapse: collapse;padding:10x;height:100px;">
@@ -54,25 +56,48 @@
         if (empty($_GET['loai_nv'])) echo "<p align='center'>Vui lòng nhập tên loại nhân viên cần tìm</p>";
         else {
             $loai_nv = $_GET['loai_nv'];
-            $query = "Select nhanvien.*, tenLoaiNV, tenPhong 
-		      from nhanvien, loainv, phongban 
-		      WHERE nhanvien.maLoaiNV = loainv.maLoaiNV and nhanvien.maPhong = phongban.maPhong
-					AND nhanvien.maLoaiNV = '$loai_nv'";
+            $query = "Select *
+		      from loainv
+		      WHERE maLoaiNV = '$loai_nv'";
             $result = mysqli_query($dbc, $query);
             if (mysqli_num_rows($result) <> 0) {
                 $rows = mysqli_num_rows($result);
-                echo "<div align='center'><h2>Có $rows nhân viên thuộc loại nhân viên trên được tìm thấy.</h2></div>";
-                while ($row = mysqli_fetch_array($result, MYSQLI_ASSOC)) {
-                    $gioiTinh = ($row['gioiTinh'] == 1) ? "Nam" : "Nữ";
-                    echo '<table border="1" cellpadding="5" cellspacing="5" style="border-collapse:collapse; text-align: center; margin:10px; margin-left:500px; margin-bottom:15px;">
-					<tr bgcolor="#eeeeee"><td colspan="2" align="center"><h3>' .
-                        $row['hoTen'] . ' - ' . $row['tenLoaiNV'] . ' - ' . $row['tenPhong'] . '</h3></td></tr>';
-                    echo '<tr><td width="200" align="center"><img src="Images/' . $row['anh'] . '" style="width: 350px; height:250px; margin:5px"/></td>';
-                    echo '<td><i><b>Ngày sinh:</i></b>' . $row['ngaySinh'] . '<br />';
-                    echo '<i><b>Giới tính:</b></i>' . $gioiTinh . '<br />';
-                    echo '</td></tr></table>';
-                }
-            } else echo "<div style='text-align:center;'><h2>Không tìm thấy nhân viên này.</h2></div>";
+                echo "<div align='center'><h2>Có $rows loại nhân viên được tìm thấy.</h2></div>";
+                    echo "
+                        <table align='center' width='800' border='1' cellpadding='2' cellspacing='2' 
+                                style='border-collapse: collapse;' class='mx-auto shadow'>
+                            <tr style='background-color: #2eb8b8; height: 40px;' align='center'>
+                                <td class='text-center'><b>STT</b></td>
+                                <td><b>Mã loại nhân viên</b></td>
+                                <td><b>Tên loại nhân viên</b></td>
+                                <td style='width:70px;'><b>Sửa</b></td>
+                                <td style='width:70px;'><b>Xóa</b></td>
+                            </tr>";
+                        $stt = 1;
+                        while ($row = mysqli_fetch_array($result)) {
+
+                            if ($stt % 2 != 0) {
+                                echo "<tr class='text-center'>";
+                                echo "<td style='height:50px; font-weight: bold;'>$stt</td>";
+                                echo "<td style='height:50px;'>".$row['maLoaiNV']."</td>";
+                                echo "<td style='height:50px;'>".$row['tenLoaiNV']."</td>";
+                                echo "<td><a href='sua_loainv.php?maLoaiNV=".$row['maLoaiNV']."' class='btn btn-warning shadow'>&nbsp<i class='far fa-edit' style='font-size:24px'></i></a></td>";
+                                echo "<td><a href='xoa_loainv.php?maLoaiNV=".$row['maLoaiNV']."' class='btn btn-danger shadow'>&nbsp<i class='far fa-trash-alt' style='font-size:24px'></i>&nbsp</a></td>";
+                                echo "</tr>";
+                            } else {
+                                echo "<tr class='text-center' style='background-color: #d7d7c1;'>";
+                                echo "<td style='height:50px; font-weight: bold;'>$stt</td>";
+                                echo "<td style='height:50px;'>".$row['maLoaiNV']."</td>";
+                                echo "<td style='height:50px;'>".$row['tenLoaiNV']."</td>";
+                                echo "<td><a href='sua_loainv.php?maLoaiNV=".$row['maLoaiNV']."' class='btn btn-warning shadow'>&nbsp<i class='far fa-edit' style='font-size:24px'></i></a></td>";
+                                echo "<td><a href='xoa_loainv.php?maLoaiNV=".$row['maLoaiNV']."' class='btn btn-danger shadow'>&nbsp<i class='far fa-trash-alt' style='font-size:24px'></i>&nbsp</a></td>";
+                                echo "</tr>";
+                            }
+                            $stt += 1;
+                        }
+                        echo '</table>';
+            }
+            else echo "<div style='text-align:center;'><h2>Không tìm loại nhân viên này.</h2></div>";
             //Dong ket noi
             mysqli_close($dbc);
         }

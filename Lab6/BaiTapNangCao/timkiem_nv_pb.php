@@ -10,46 +10,60 @@
 </head>
 
 <body>
-    <?php
+    <?php 
     include('includes/header.php');
     if(!isset($_SESSION['username']))
         echo("<script>location.href = 'index.php';</script>");
+    require('connect.php');
     ?>
     <form action="" method="get">
         <table bgcolor="#00e673" align="center" class="my-2 rounded shadow" width="100%" border="1" cellpadding="5" cellspacing="5" style="border-collapse: collapse;padding:10x;height:100px;">
             <tr>
                 <td align="center">
                     <font color="#ff3399">
-                        <h3>TÌM KIẾM THÔNG TIN NHÂN VIÊN</h3>
+                        <h3>TÌM KIẾM NHÂN VIÊN THEO PHÒNG BAN</h3>
                     </font>
                 </td>
             </tr>
             <tr>
                 <td align="center">
-                    <div class="row w-75 mb-2" style="margin-left: 150px;font-weight:bold;">
-                        <label class="col-2 mt-2">Tên nhân viên: </label>
-                        <input type="text" class="form-control w-50 col-9 mx-2 shadow" name="tennv" size="30" value="<?php if (isset($_GET['tennv'])) echo $_GET['tennv']; ?>">
-                        <input type="submit" name="tim" value="Tìm kiếm" class="btn btn-primary col-1 shadow">
-                    </div>
+                    
+                    <select name="phong_ban">
+                        <?php
+                        $query_timkiem = "select * from phongban";    //Hiển thị tên các loại nhân viên
+                        $result_timkiem = mysqli_query($dbc, $query_timkiem);
+                        if (mysqli_num_rows($result_timkiem) <> 0) {
+                            while ($row = mysqli_fetch_array($result_timkiem)) {
+                                $maPhong = $row['maPhong'];
+                                $tenPhong = $row['tenPhong'];
+                                echo "<option value='$maPhong' ";
+                                if (isset($_REQUEST['phong_ban']) && ($_REQUEST['phong_ban'] == $maPhong)) echo "selected='selected'";
+                                echo ">$tenPhong</option>";
+                            }
+                        }
+                        mysqli_free_result($result_timkiem);
+                        ?>
+                    </select>
+
+
+                    <input type="submit" name="tim" value="Tìm kiếm">
                 </td>
             </tr>
         </table>
     </form>
     <?php
     if ($_SERVER['REQUEST_METHOD'] == 'GET') {
-        if (empty($_GET['tennv'])) echo "<h3 align='center'>Vui lòng nhập tên nhân viên cần tìm</h3>";
+        if (empty($_GET['phong_ban'])) echo "<p align='center'>Vui lòng nhập tên phòng ban cần tìm</p>";
         else {
-            $tennv = $_GET['tennv'];
-            require('connect.php');
-            
+            $phong_ban = $_GET['phong_ban'];
             $query = "Select nhanvien.*, tenLoaiNV, tenPhong 
 		      from nhanvien, loainv, phongban 
 		      WHERE nhanvien.maLoaiNV = loainv.maLoaiNV and nhanvien.maPhong = phongban.maPhong
-					AND hoTen like CONCAT('%', CONVERT('$tennv', BINARY), '%')";
+					AND nhanvien.maPhong = '$phong_ban'";
             $result = mysqli_query($dbc, $query);
             if (mysqli_num_rows($result) <> 0) {
                 $rows = mysqli_num_rows($result);
-                echo "<div align='center'><h2>Có $rows nhân viên được tìm thấy.</h2></div>";
+                echo "<div align='center'><h2>Có $rows nhân viên thuộc phòng ban trên được tìm thấy.</h2></div>";
                 echo "
                   <table align='center' width='1400' border='1' cellpadding='2' cellspacing='2' 
                         style='border-collapse: collapse;' class='mx-auto shadow rounded'>
@@ -103,13 +117,11 @@
                     $stt += 1;
                 }
                 echo '</table>';
-                
-            } else echo "<div style='text-align:center;'><h2>Không tìm thấy nhân viên này.</h2></div>";
+            } else echo "<div style='text-align:center;'><h2>Không tìm thấy nhân viên trong phòng ban này.</h2></div>";
             //Dong ket noi
             mysqli_close($dbc);
         }
     }
-    
     include('includes/footer.html');
     ?>
 </body>

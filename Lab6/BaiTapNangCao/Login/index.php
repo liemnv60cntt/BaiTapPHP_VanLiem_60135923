@@ -12,54 +12,44 @@
   <link rel="stylesheet" href="assets/css/login.css">
 </head>
 
-<body>
+<body style="background-image: url('assets/images/bg_2.png');">
   <?php
-  // Ket noi CSDL
-  require("../connect.php");
-  // Chuan bi cau truy van & Thuc thi cau truy van
-  $_username = "SELECT username, password FROM users";
-  $result1 = mysqli_query($dbc, $_username);
-  // $_password = "SELECT password FROM users WHERE username='$_username'";
-  // $result2 = mysqli_query($dbc, $_password);
-  $arr_kq = [];
-  if (mysqli_num_rows($result1) > 0) {
-    while ($row = mysqli_fetch_assoc($result1)) {
-      // var_dump($row);
-      // duyệt qua từng dòng và thêm vào mảng kết quả
-      array_push($arr_kq, $row);
-    }
-  } else {
-    echo 'Khong co du lieu';
-  }
-  // mysqli_close($connect);
-
-  // echo "<pre>";
-  // var_dump($arr_kq);
-  // echo "</pre>";
-  //Kiểm tra Input
   $err = "";
-  $username = (isset($_POST['username'])) ? $_POST['username'] : '';
-  $pwd = (isset($_POST['pwd'])) ? $_POST['pwd'] : '';
+  $username = '';
+  $pwd = '';
   if (isset($_POST['login'])) {
-    if ($username != null && $pwd != null) {
-      foreach ($arr_kq as $key => $value) {
-        if ($username == $value['username'] && $pwd == $value['password']) {
-          // echo "Thành công";
-          header("Location: ../index.php");
-          // break;
-        } else {
-          $err = "Sai tài khoản hoặc mật khẩu";
-          $action = "";
-          // break;
-        }
+   
+    if($_POST['username'] == null){
+      $err = "Vui lòng nhập username!";    
+    }else{
+      $username = $_POST['username'];
+    
+      if($_POST['pwd'] == null){
+        $err = "Vui lòng nhập password!";
+      }else{
+        $pwd = $_POST['pwd'];
       }
-    } else {
-      $err = "Vui lòng nhập username và password!";
+    }
+    if($username && $pwd){
+      require("../connect.php");
+      $sql="select * from users where username='".$username."' and password='".$pwd."'";
+      $result = mysqli_query($dbc, $sql);
+      if(mysqli_num_rows($result) == 0) 
+        $err = "Username và password không đúng, vui lòng thử lại";
+      else
+      { 
+        $row=mysqli_fetch_array($result); 
+        session_start(); 
+        $_SESSION['username'] = $row['username']; 
+        $_SESSION['level'] = $row['level']; 
+        $_SESSION['isLogin'] = true; 
+        header("Location: ../index.php");
+      } 
     }
   }
   // echo $err;
   ?>
-  <main class="d-flex align-items-center min-vh-100 py-3 py-md-0">
+  <main class="d-flex align-items-center min-vh-100 py-3 py-md-0 shadow">
     <div class="container">
       <div class="card login-card">
         <div class="row no-gutters">
@@ -82,7 +72,7 @@
                   <input type="password" name="pwd" id="pwd" class="form-control" placeholder="***********" value="<?php echo $pwd ?>">
                 </div>
                 <h6 class="text-danger text-center"><?php echo $err ?></h6>
-                <input name="login" id="login" class="btn btn-block login-btn mb-4" type="submit" value="Đăng nhập">
+                <input name="login" id="login" class="btn btn-block login-btn mb-4 shadow" type="submit" value="Đăng nhập">
               </form>
               <!-- <a href="#!" class="forgot-password-link">Forgot password?</a>
                 <p class="login-card-footer-text">Don't have an account? <a href="#!" class="text-reset">Register here</a></p>
