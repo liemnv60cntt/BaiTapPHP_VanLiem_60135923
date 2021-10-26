@@ -1,0 +1,3 @@
+Cách chạy bài tập nâng cao Lab6 - Quản lý nhân viên:
++ import file qlnhanvien.sql trên phpmyadmin để sử dụng
++ Phải đăng nhập tài khoản để quản lý: nvliem - 12345678 hoặc vbtoan - 123456
