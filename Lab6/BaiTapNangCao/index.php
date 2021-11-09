@@ -12,7 +12,7 @@
 
 <body>
     <?php
-    include('includes/header.php');
+    include('includes/header.php'); 
     ?>
     <h1 class="text-primary text-center" style="font-weight: bold;">Trang chủ Quản lý nhân viên</h1>
     <table class="table table-hover mx-auto w-25">

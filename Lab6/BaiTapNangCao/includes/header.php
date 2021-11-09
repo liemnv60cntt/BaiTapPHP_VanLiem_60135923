@@ -58,6 +58,7 @@
 					<li><a class="dropdown-item" href="timkiem_nv_pb.php">Tìm kiếm nhân viên theo phòng</a></li>
 					<li><a class="dropdown-item" href="timkiem_loainv.php">Tìm kiếm loại nhân viên</a></li>
 					<li><a class="dropdown-item" href="timkiem_phongban.php">Tìm kiếm phòng ban</a></li>
+					<li><a class="dropdown-item" href="timkiem_nangcao.php">Tìm kiếm nâng cao</a></li>
 				  </ul>
 				</li>
 			  </ul>
@@ -115,6 +116,7 @@
 		session_unset();
 		// destroy the session
 		session_destroy();
+		echo("<script>location.href = 'index.php';</script>");
 	}
 	?>
 	<div id="content"><!-- Start of the page-specific content. -->
